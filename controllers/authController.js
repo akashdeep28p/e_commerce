@@ -1,6 +1,7 @@
 const userModel = require('../models/user')
 const {StatusCodes} = require('http-status-codes')
 const error = require('../errors')
+const {attachCookiesToResponse} = require('../utils')
 
 const register = async (req, res) => {
     const {email, name, password} = req.body
@@ -13,7 +14,10 @@ const register = async (req, res) => {
     const role = isFirstAccount ? 'admin' : 'user'
 
     const user = await userModel.create({email, name, password, role})
-    res.status(StatusCodes.CREATED).json({user})
+    const userPayload = {name : user.name, userId : user._id, role : user.role}
+
+    attachCookiesToResponse({res, userPayload})
+    res.status(StatusCodes.CREATED).send()
 }
 
 const login = async (req, res) => {

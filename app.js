@@ -1,6 +1,7 @@
 require('dotenv').config()
 require('express-async-errors')
 const morgan = require('morgan')
+const cookieParser = require('cookie-parser')
 
 const express = require('express')
 const app = express()
@@ -15,8 +16,10 @@ app.use(morgan('tiny'))
 
 //used to have access to json data in request body
 app.use(express.json())
+app.use(cookieParser(process.env.JWT_SECRET))
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
+    console.log(req.signedCookies)
     res.send('e_commerce')
 })
 
